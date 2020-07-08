@@ -1,0 +1,92 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Image resizer</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>  
+<body>  
+  <div class="container-fluid">
+    <h1 class="">Image resizer</h1>
+    <p class="" id="progress-title"></p>
+    <form class="md-form" action="{% url 'home' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form.image_file|add_class:"btn btn-primary btn-sm"}}
+      </div>
+      <div class="form-group">
+        <label for="width">Width</label>
+        {{form.width|add_class:"form-control"}}
+      </div>
+      <div class="form-group">
+        <label for="height">Height</label>
+        {{form.height|add_class:"form-control"}}
+      </div>
+      <button type="submit" class="btn btn-primary"> Submit </button>
+    </form>
+  </div>
+  
+  <script>
+  var file = document.getElementById('{{form.image_file.id_for_label}}');
+  file.onchange = function() {
+    if(file.files.length > 0) {
+      document.getElementById('file-name').innerHTML = file.files[0].name;
+    }
+  };
+  </script>
+
+  {% if task_id %}
+  <script>
+  var taskUrl = "{% url 'task' task_id=task_id %}";
+  var dots = 1;
+  var progressTitle = document.getElementById('progress-title');
+  updateProgressTitle();
+  var timer = setInterval(function() {
+    updateProgressTitle();
+    $.get(taskUrl,
+      function(data){
+        const taskStatus = data.task_status
+        if (taskStatus === 'SUCCESS') {
+          const img_path = data.results.img_path
+          clearTimer('Check downloads for results');
+          var url = window.location.protocol + '//' + window.location.host + img_path;
+          var a = document.createElement("a");
+          a.target = '_BLANK';
+          document.body.appendChild(a);
+          a.style = "display: none";
+          a.href = url;
+          a.download = img_path.substring(img_path.lastIndexOf('/') + 1);
+          a.click();
+          document.body.removeChild(a);
+        } else if (taskStatus === 'FAILURE') {
+          clearTimer('An error occurred');
+        }
+      })
+      .catch(function(err){
+        console.log('err', err);
+        clearTimer('An error occurred');
+      });
+  }, 50);
+
+  function updateProgressTitle() {
+    dots++;
+    if (dots > 3) {
+      dots = 1;
+    }
+    progressTitle.innerHTML = 'processing images ';
+    for (var i = 0; i < dots; i++) {
+      progressTitle.innerHTML += '.';
+    }
+  }
+  function clearTimer(message) {
+    clearInterval(timer);
+    progressTitle.innerHTML = message;
+  }
+  </script> 
+  {% endif %}
+</body>  
+</html>  
