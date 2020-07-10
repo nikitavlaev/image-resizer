@@ -17,6 +17,8 @@ import logging
 
 logger = logging.getLogger('django')
 
+current_task_ids = []
+
 
 class FileUploadForm(forms.Form):
     '''
@@ -56,6 +58,7 @@ class SetTaskView(APIView):
             # start celery task
             task = resize_img.delay(file_path, w, h)
 
+            current_task_ids.append(task.id)
             response_data = {'task_status': task.status, 'task_id': task.id}
             logger.debug(f"Correct response: {response_data}")
             return JsonResponse(response_data)
@@ -70,6 +73,8 @@ class GetTaskView(APIView):
     '''
     def get(self, request, task_id):
         logger.debug("get status/image request")
+        if task_id not in current_task_ids:
+            return Response('Wrong task id', status.HTTP_400_BAD_REQUEST)
 
         task = current_app.AsyncResult(task_id)
         response_data = {'task_status': task.status, 'task_id': task.id}
