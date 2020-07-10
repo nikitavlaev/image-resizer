@@ -11,7 +11,7 @@ Run:
   $ redis-server
 ```
 #### 2. Start Celery workers  
-Inside image_resizer/image_resizer directory run:
+Inside image_resizer directory run:
 ```bash
   $ celery worker -A image_resizer --loglevel=info --concurrency=3
 ```
