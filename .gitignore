@@ -1,2 +1,4 @@
 image_resizer/db.sqlite3
 __pycache__/
+image_resizer/media/images/copy_*
+debug.log
