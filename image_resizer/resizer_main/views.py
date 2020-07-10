@@ -74,13 +74,14 @@ class GetTaskView(APIView):
     def get(self, request, task_id):
         logger.debug("get status/image request")
         if task_id not in current_task_ids:
-            return Response('Wrong task id', status.HTTP_400_BAD_REQUEST)
+            return Response(f'Wrong task id: {task_id}', status.HTTP_400_BAD_REQUEST)
 
         task = current_app.AsyncResult(task_id)
         response_data = {'task_status': task.status, 'task_id': task.id}
 
         if task.status == 'SUCCESS':
             result = task.get()
+            current_task_ids.remove()
             if result['status'] == 'FAILURE':
                 logger.debug("error during image processing")
                 return Response('Error during image processing', status.HTTP_500_INTERNAL_SERVER_ERROR)
