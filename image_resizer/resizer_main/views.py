@@ -79,7 +79,7 @@ class GetTaskView(APIView):
             if result['status'] == 'FAILURE':
                 logger.debug("error during image processing")
                 return Response('Error during image processing', status.HTTP_500_INTERNAL_SERVER_ERROR)
-            response_data['results'] = result
+            response_data['img_path'] = os.path.join(settings.SITE_URL, result['img_path'])
 
         logger.debug(f"Correct response with: {response_data}")
         return JsonResponse(response_data)
