@@ -55,3 +55,20 @@ Example response:
 ```
   {"task_status": "PENDING", "task_id": "8ee7e6fc-322a-4378-9a6e-26c0223534ad"}
 ```
+2. Check for task status and result image  
+URL structure:
+```
+  http://host_name/api/<task_id>
+```
+Method: GET
+
+Parameters: None
+
+Returns:  
+'task_status': 'PENDING', 'SUCCESS' or 'FAILURE' -- current status of task
+'task_id': id of requested task
+'results': returned if task_status == 'SUCCESS'
+{
+  'img_path': path, relative to host, to download resulting image  
+  'status': 
+}
