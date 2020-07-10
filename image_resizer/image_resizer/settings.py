@@ -25,10 +25,29 @@ SECRET_KEY = 'wm%kyxu63@9jms#kzviraruuhd#f+k432*5*h@e#9wqvwl%q9j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+SITE_URL = "http://localhost:8000"
 
 # Application definition
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False, 
+    'handlers': { 
+        'file': { 
+            'level': 'DEBUG', 
+            'class': 'logging.FileHandler', 
+            'filename': '/tmp/debug.log', 
+            }, 
+        }, 
+    'loggers': { 
+        'django': { 
+            'handlers': ['file'], 
+            'level': 'DEBUG', 
+            'propagate': True, 
+            }, 
+        }, 
+    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,14 +57,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'resizer_main',
-    'widget_tweaks',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -134,3 +152,6 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+#tests
+TEST_IMG = 'gift_idea.png'
