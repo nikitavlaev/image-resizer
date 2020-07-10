@@ -47,11 +47,8 @@ class APITest(TestCase):
         payload = {'width': width,
                    'height': height}
         files = {'image_file': open(img_copy_path, 'rb')}
-        headers = {
-            'Accept': '*/*'
-        }
 
-        response = requests.request("POST", url, headers=headers, data=payload, files=files)
+        response = requests.request("POST", url, data=payload, files=files)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -61,10 +58,7 @@ class APITest(TestCase):
         task_id, task_status = self.upload_image(settings.TEST_IMG, w, h)
         while task_status == 'PENDING':
             url = settings.SITE_URL + reverse('task', args=(task_id,))
-            headers = {
-                'Accept': '*/*'
-            }
-            response = requests.request("GET", url, headers=headers)
+            response = requests.request("GET", url)
             task_status = response.json()['task_status']
         self.assertEqual(task_status, 'SUCCESS')
 
@@ -84,10 +78,7 @@ class APITest(TestCase):
         while 'PENDING' in task_status:
             for i in range(n_tasks):
                 url = settings.SITE_URL + reverse('task', args=(task_ids[i],))
-                headers = {
-                    'Accept': '*/*'
-                }
-                response = requests.request("GET", url, headers=headers)
+                response = requests.request("GET", url)
                 task_status[i] = response.json()['task_status']
 
         self.assertTrue(all([x == 'SUCCESS' for x in task_status]))
