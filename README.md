@@ -5,15 +5,18 @@ Django-based app, using Celery+Redis to handle resize requests asynchronously
 
 ## Setting up
 
-1. Run:
+#### 1. Start Redis server as a message broker for Celery  
+Run:
 ```bash
   $ redis-server
 ```
-2. Inside image_resizer/image_resizer directory run:
+#### 2. Start Celery workers  
+Inside image_resizer/image_resizer directory run:
 ```bash
   $ celery worker -A image_resizer --loglevel=info --concurrency=3
 ```
-3. Inside image_resizer directory run:
+#### 3. Launch server  
+Inside image_resizer directory run:
 ```bash
   $ python manage.py runserver
 ```
@@ -26,7 +29,7 @@ Inside image_resizer directory run:
 ```
 ## API Info
 
-1. Create task to resize image
+#### 1. Create task to resize image
 URL structure:
 ```
   http://host_name/api/
@@ -57,7 +60,7 @@ Example response:
 ```
   
   
-2. Check for task status and result image  
+#### 2. Check for task status and result image  
 URL structure:
 ```
   http://host_name/api/<task_id>
